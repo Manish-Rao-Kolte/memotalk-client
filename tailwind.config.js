@@ -19,6 +19,9 @@ module.exports = {
       white: "#ffffff",
       active: "#d9dbde",
       hover: "#202c33",
+      badge_bg: "#e7fce3",
+      badge_text: "#3b9f88",
+      card_hover: "#f0f2f5",
     },
     container: {
       center: true,
