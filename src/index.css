@@ -59,6 +59,36 @@
   --tw-ring-shadow: initial;
 }
 
+::-webkit-scrollbar {
+  width: 2px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: white; /* Color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners of the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color on hover */
+}
+
+.contactcard:hover .slArrowDown {
+  animation: slideLeft 0.2s ease-in forwards;  /* Apply animation on hover */
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(2.25rem); /* Start from the right side */
+  }
+  to {
+    transform: translateX(0); /* Move to the left side */
+  }
+}
+
 
 @layer base {
   * {

@@ -9,20 +9,12 @@ module.exports = {
     "./src/**/*.{js,jsx}",
   ],
   prefix: "",
-  theme: {
-    colors: {
-      bg_primary: "#d8dbdc",
-      header: "#00a884",
-      bg_secondary: "#f0f2f5",
-      icon: "#54656f",
-      green_legend: "#25d366",
-      white: "#ffffff",
-      active: "#d9dbde",
-      hover: "#202c33",
-      badge_bg: "#e7fce3",
-      badge_text: "#3b9f88",
-      card_hover: "#f0f2f5",
+  variants: {
+    extend: {
+      animation: ["hover"], // Enable hover variants for animations
     },
+  },
+  theme: {
     container: {
       center: true,
       padding: "2rem",
@@ -65,6 +57,19 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        bg_primary: "#d8dbdc",
+        header: "#00a884",
+        bg_secondary: "#f0f2f5",
+        icon: "#54656f",
+        green_legend: "#25d366",
+        white: "#ffffff",
+        active: "#d9dbde",
+        hover: "#202c33",
+        badge_bg: "#e7fce3",
+        badge_text: "#3b9f88",
+        card_hover: "#f0f2f5",
+        "form-primary": "rgb(38 187 94)",
+        "form-secondary": "rgb(7 183 73)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -97,5 +102,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
 };

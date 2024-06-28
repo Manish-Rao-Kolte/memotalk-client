@@ -6,9 +6,9 @@ import { RiWechatChannelsFill } from "react-icons/ri";
 import { MdGroups2 } from "react-icons/md";
 import { GrSettingsOption } from "react-icons/gr";
 
-const Aside = () => {
+const Aside = ({ user }) => {
   return (
-    <aside className='h-full w-16 z-10 px-1 py-2 flex flex-col justify-between relative'>
+    <aside className='h-full w-[4rem] z-10 px-1 py-2 flex flex-col justify-between relative'>
       <div className='flex flex-col items-center gap-1'>
         <CustomeTooltip
           to={"/api"}
@@ -60,7 +60,10 @@ const Aside = () => {
           hoverData={"Profile"}
           to={"/api"}
           iconComponent={
-            <img src='/avatar.jpg' className='w-full h-full rounded-full' />
+            <img
+              src={user?.avatar?.url}
+              className='w-full h-full rounded-full'
+            />
           }
           side={"right"}
         />

@@ -3,11 +3,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RegisterUser from "./pages/app/register/RegisterUser.jsx";
 import LoginUser from "./pages/app/login/LoginUser.jsx";
 import Home from "./pages/app/home/Home.jsx";
-
-// const initialMessage = {
-//     user: "",
-//     message: "",
-// };
+import ProtectedRoutes from "./components/ProtectedRoutes.jsx";
+import { Provider } from "react-redux";
+import { store } from "./redux/store.js";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,14 +24,15 @@ function App() {
     },
     {
       path: "/api",
-      element: <Home />,
+      element: <ProtectedRoutes />,
+      children: [{ index: true, element: <Home /> }],
     },
   ]);
 
   return (
-    <>
+    <Provider store={store}>
       <RouterProvider router={router} />
-    </>
+    </Provider>
   );
 }
 
