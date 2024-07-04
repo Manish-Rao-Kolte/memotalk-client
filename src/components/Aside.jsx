@@ -6,12 +6,12 @@ import { RiWechatChannelsFill } from "react-icons/ri";
 import { MdGroups2 } from "react-icons/md";
 import { GrSettingsOption } from "react-icons/gr";
 
-const Aside = ({ user }) => {
+const Aside = ({ user, avatarPath }) => {
   return (
     <aside className='h-full w-[4rem] z-10 px-1 py-2 flex flex-col justify-between relative'>
       <div className='flex flex-col items-center gap-1'>
         <CustomeTooltip
-          to={"/api"}
+          to={"/"}
           hoverData={"Chats"}
           iconComponent={
             <MdOutlineMarkUnreadChatAlt className='w-[55%] h-[55%] text-icon' />
@@ -20,7 +20,7 @@ const Aside = ({ user }) => {
           side={"right"}
         />
         <CustomeTooltip
-          to={"/api"}
+          to={"/"}
           hoverData={"Status"}
           iconComponent={
             <PiCirclesThreePlusDuotone className='w-[55%] h-[55%] text-icon' />
@@ -29,7 +29,7 @@ const Aside = ({ user }) => {
           side={"right"}
         />
         <CustomeTooltip
-          to={"/api"}
+          to={"/"}
           hoverData={"Channels"}
           iconComponent={
             <RiWechatChannelsFill className='w-[55%] h-[55%] text-icon' />
@@ -38,7 +38,7 @@ const Aside = ({ user }) => {
           side={"right"}
         />
         <CustomeTooltip
-          to={"/api"}
+          to={"/"}
           hoverData={"Communities"}
           iconComponent={<MdGroups2 className='w-[55%] h-[55%] text-icon' />}
           active={false}
@@ -49,7 +49,7 @@ const Aside = ({ user }) => {
         <CustomeTooltip
           active={false}
           hoverData={"Settings"}
-          to={"/api"}
+          to={"/"}
           iconComponent={
             <GrSettingsOption className='w-[55%] h-[55%] text-icon' />
           }
@@ -58,12 +58,9 @@ const Aside = ({ user }) => {
         <CustomeTooltip
           active={false}
           hoverData={"Profile"}
-          to={"/api"}
+          to={"/"}
           iconComponent={
-            <img
-              src={user?.avatar?.url}
-              className='w-full h-full rounded-full'
-            />
+            <img src={avatarPath} className='w-full h-full rounded-full' />
           }
           side={"right"}
         />

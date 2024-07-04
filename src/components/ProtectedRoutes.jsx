@@ -1,19 +1,12 @@
-import { authSelector } from "@/redux/reducers/authReducer";
+import { userSelector } from "@/redux/reducers/userReducer";
 import axios from "axios";
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoutes = () => {
-  const { user } = useSelector(authSelector);
-  // useEffect(() => {
-  //   try {
-  //     axios.get(`${import.meta.env.VITE_SERVER_URL}/`)
-  //   } catch (error) {
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  //   }
-  // }, []);
-  return user !== null ? <Outlet /> : <Navigate to={"/login"} />;
+  return user ? <Outlet /> : <Navigate to={"/login"} />;
 };
 
 export default ProtectedRoutes;

@@ -6,60 +6,46 @@ import Home from "./pages/app/home/Home.jsx";
 import ProtectedRoutes from "./components/ProtectedRoutes.jsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      children: [
-        {
-          path: "register",
-          element: <RegisterUser />,
-        },
-        {
-          path: "login",
-          element: <LoginUser />,
-        },
-      ],
-    },
-    {
-      path: "/api",
       element: <ProtectedRoutes />,
       children: [{ index: true, element: <Home /> }],
+    },
+    {
+      path: "/register",
+      element: <RegisterUser />,
+    },
+    {
+      path: "/login",
+      element: <LoginUser />,
     },
   ]);
 
   return (
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+      <ToastContainer
+        autoClose={800}
+        limit={3}
+        position='top-right'
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='light'
+      ></ToastContainer>
+    </>
   );
 }
 
 export default App;
-
-// import { Input } from "@/components/ui/input";
-// import { Button } from "./components/ui/button";
-// import { useEffect, useState } from "react";
-// import io from "socket.io-client";
-
-// const [message, setMessage] = useState(initialMessage);
-// const [messageList, setMessageList] = useState([]);
-
-// const sendMessage = () => {
-//     const socket = io("http://localhost:3001");
-//     socket.emit("chat-message", message);
-//     setMessage(initialMessage);
-// };
-
-// useEffect(() => {
-//     const data = prompt("Your name?");
-//     setMessage({ ...message, user: data });
-//     const socket = io("http://localhost:3001");
-//     socket.on("chat-message", ({ user, message }) => {
-//         setMessageList((prev) => [...prev, { user, message }]);
-//     });
-//     return () => {
-//         socket.disconnect();
-//     };
-// }, []);

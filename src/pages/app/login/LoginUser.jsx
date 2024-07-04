@@ -1,8 +1,7 @@
-import { setUserDetails } from "@/redux/reducers/authReducer";
-import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { signInUserAsync, userSelector } from "@/redux/reducers/userReducer";
 
 const initialUserLoginData = {
   email: "",
@@ -13,27 +12,21 @@ const initialUserLoginData = {
 const LoginUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { loading } = useSelector(userSelector);
   const [userLoginData, setUserLoginData] = useState(initialUserLoginData);
-  const [signingInUser, setSigningInUser] = useState(false);
+
   const handleLoginFormSubmit = (e) => {
-    setSigningInUser(true);
     e.preventDefault();
-    try {
-      axios
-        .post(
-          `${import.meta.env.VITE_SERVER_URL}/api/users/login`,
-          userLoginData,
-          { withCredentials: true }
-        )
-        .then((response) => {
-          setSigningInUser(false);
-          dispatch(setUserDetails(response?.data?.data));
-          navigate("/api");
-        });
-    } catch (error) {
-      setSigningInUser(false);
-      console.log("Error: ", error);
-    }
+    dispatch(signInUserAsync(userLoginData))
+      .then((result) => {
+        if (result.error) return;
+        setUserLoginData(initialUserLoginData);
+        navigate("/");
+      })
+      .catch((err) => {
+        setUserLoginData(initialUserLoginData);
+        return;
+      });
   };
   return (
     <div className='h-screen w-screen'>
@@ -123,7 +116,7 @@ const LoginUser = () => {
                 <input
                   id='confirmPassword'
                   name='confirmPassword'
-                  type='text'
+                  type='password'
                   autoComplete='confirmPassword'
                   value={userLoginData.confirmPassword}
                   onChange={(e) =>
@@ -141,10 +134,10 @@ const LoginUser = () => {
             <div>
               <button
                 type='submit'
-                disabled={signingInUser}
+                disabled={loading}
                 className='flex w-full justify-center rounded-md bg-form-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-form-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-form-secondary'
               >
-                {signingInUser ? (
+                {loading ? (
                   <p className='animate-pulse'>Signing in...</p>
                 ) : (
                   "Sign in"

@@ -80,6 +80,7 @@
   animation: slideLeft 0.2s ease-in forwards;  /* Apply animation on hover */
 }
 
+
 @keyframes slideLeft {
   from {
     transform: translateX(2.25rem); /* Start from the right side */
