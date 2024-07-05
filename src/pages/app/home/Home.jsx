@@ -13,6 +13,7 @@ import {
 } from "@/redux/reducers/userReducer";
 import socket from "@/lib/socket";
 import ChatSection from "../chat/ChatSection";
+import { getChatsAsync } from "@/redux/reducers/chatReducer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -40,7 +41,9 @@ const Home = () => {
   };
   //on every private message fetch all friends and non friend users who have either received a message from current user or have sent message to current user to update the list according to latest conversation.
   socket.on("privateMessage", ({ senderID, message }) => {
-    dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
+    dispatch(getChatFriendsAndUsers({ userId: currentUser._id })).then(() => {
+      dispatch(getChatsAsync({ user: user._id, friend: selectedContact._id }));
+    });
   });
 
   //connect to the socket on component mount and get all available user to show in add friends section.

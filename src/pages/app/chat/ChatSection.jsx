@@ -15,7 +15,6 @@ import {
   chatSelector,
   createChatMessageAsync,
   getChatsAsync,
-  markChatsAsReadAsync,
 } from "@/redux/reducers/chatReducer";
 import { getChatFriendsAndUsers } from "@/redux/reducers/userReducer";
 
@@ -46,10 +45,10 @@ const ChatSection = ({ user, friend }) => {
 
     // dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
   };
-  socket.on("privateMessage", ({ senderID, message }) => {
-    dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
-    dispatch(getChatFriendsAndUsers({ userId: user._id }));
-  });
+  // socket.on("privateMessage", ({ senderID, message }) => {
+
+  //   dispatch(getChatFriendsAndUsers({ userId: user._id }));
+  // });
 
   useEffect(() => {
     dispatch(getChatsAsync({ user: user._id, friend: friend._id })).then(() => {
