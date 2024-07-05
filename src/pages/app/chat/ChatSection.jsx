@@ -52,6 +52,9 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
   };
 
   useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
     dispatch(markChatsAsReadAsync({ userId: user._id, senderId: friend._id }))
       .then(() => {
         dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
@@ -143,6 +146,7 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
         />
         {message?.length > 0 ? (
           <PiPaperPlaneRightFill
+            disabled={loading}
             className='w-[4%] h-[45%] text-icon hover:cursor-pointer ml-1'
             onClick={handleSendMessage}
           />

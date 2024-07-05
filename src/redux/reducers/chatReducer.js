@@ -3,7 +3,7 @@ import { apiCall } from "@/lib/apicall";
 import { toast } from "react-toastify";
 
 const initialState = {
-  chats: null,
+  chats: [],
   loading: false,
   error: null,
 };
@@ -78,8 +78,8 @@ const chatSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getChatsAsync.pending, (state, action) => {
-        state.chats = null;
         state.loading = true;
+        state.chats = [];
         state.error = null;
       })
       .addCase(getChatsAsync.fulfilled, (state, action) => {
@@ -88,9 +88,13 @@ const chatSlice = createSlice({
         state.error = null;
       })
       .addCase(getChatsAsync.rejected, (state, action) => {
-        state.chats = null;
+        state.chats = [];
         state.loading = false;
         state.error = action.error.message || "Failed fetching chat";
+      })
+      .addCase(createChatMessageAsync.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(createChatMessageAsync.fulfilled, (state, action) => {
         state.chats = [...state.chats, action.payload?.data];
