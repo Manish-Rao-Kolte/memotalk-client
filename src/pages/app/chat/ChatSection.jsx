@@ -15,15 +15,19 @@ import {
   chatSelector,
   createChatMessageAsync,
   getChatsAsync,
+  markChatsAsReadAsync,
 } from "@/redux/reducers/chatReducer";
 import { getChatFriendsAndUsers } from "@/redux/reducers/userReducer";
 
-const ChatSection = ({ user, friend }) => {
+const ChatSection = ({ user, friend, incomingMessage }) => {
   const dispatch = useDispatch();
   const { chats, loading } = useSelector(chatSelector);
   const [message, setMessage] = useState("");
   const bottomRef = useRef(null);
 
+  if (bottomRef.current) {
+    bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }
   const handleSendMessage = () => {
     dispatch(
       createChatMessageAsync({
@@ -41,22 +45,21 @@ const ChatSection = ({ user, friend }) => {
       })
       .finally(() => {
         setMessage("");
+        if (bottomRef.current) {
+          bottomRef.current.scrollIntoView({ behavior: "smooth" });
+        }
       });
-
-    // dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
   };
-  // socket.on("privateMessage", ({ senderID, message }) => {
-
-  //   dispatch(getChatFriendsAndUsers({ userId: user._id }));
-  // });
 
   useEffect(() => {
-    dispatch(getChatsAsync({ user: user._id, friend: friend._id })).then(() => {
-      if (bottomRef.current) {
-        bottomRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    });
-  }, [friend]);
+    dispatch(markChatsAsReadAsync({ userId: user._id, senderId: friend._id }))
+      .then(() => {
+        dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
+      })
+      .finally(() => {
+        dispatch(getChatFriendsAndUsers({ userId: user._id }));
+      });
+  }, [incomingMessage, friend]);
 
   if (loading) {
     return (

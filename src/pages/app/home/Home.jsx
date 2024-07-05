@@ -13,7 +13,6 @@ import {
 } from "@/redux/reducers/userReducer";
 import socket from "@/lib/socket";
 import ChatSection from "../chat/ChatSection";
-import { getChatsAsync } from "@/redux/reducers/chatReducer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,6 +24,11 @@ const Home = () => {
   const [showAll, setShowAll] = useState(true);
   const [showUnread, setShowUnread] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
+  const [incomingMessage, setIncomingMessage] = useState(null);
+
+  socket.on("privateMessage", ({ senderID, message }) => {
+    setIncomingMessage(message);
+  });
 
   //handle when user clickes on logout.
   const handleUserLogout = () => {
@@ -39,12 +43,6 @@ const Home = () => {
       })
       .finally(() => {});
   };
-  //on every private message fetch all friends and non friend users who have either received a message from current user or have sent message to current user to update the list according to latest conversation.
-  socket.on("privateMessage", ({ senderID, message }) => {
-    dispatch(getChatFriendsAndUsers({ userId: currentUser._id })).then(() => {
-      dispatch(getChatsAsync({ user: user._id, friend: selectedContact._id }));
-    });
-  });
 
   //connect to the socket on component mount and get all available user to show in add friends section.
   useEffect(() => {
@@ -58,15 +56,10 @@ const Home = () => {
     });
   }, []);
 
+  //fetch list of users with message when ther eis new message to rearrange.
   useEffect(() => {
-    dispatch(
-      markChatsAsReadAsync({ userId: user._id, senderId: selectedContact._id })
-    ).then(() => {
-      dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
-    });
-  }, [selectedContact]);
-
-  //fetch all friends and non friend users who have either received a message from current user or have sent message to current user on component mount.
+    dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
+  }, [incomingMessage]);
 
   return (
     <div className='w-full min-h-screen bg-bg_primary relative'>
@@ -126,7 +119,11 @@ const Home = () => {
         {/* center section ends here */}
         {/* right chat section starts from here */}
         {selectedContact !== null ? (
-          <ChatSection user={currentUser} friend={selectedContact} />
+          <ChatSection
+            user={currentUser}
+            friend={selectedContact}
+            incomingMessage={incomingMessage}
+          />
         ) : (
           <div>
             <div className='h-full w-[54.7vw] min-w-[37rem] flex justify-center items-center'>

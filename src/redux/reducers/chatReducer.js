@@ -18,7 +18,7 @@ export const getChatsAsync = createAsyncThunk(
       toast.error(
         error?.response?.data?.err ||
           error?.response?.data?.error ||
-          "Error while registering user!"
+          "Error while fetching chats!"
       );
       throw error; // Throw the error to propagate it for handling or logging
     }
@@ -35,7 +35,7 @@ export const createChatMessageAsync = createAsyncThunk(
       toast.error(
         error?.response?.data?.err ||
           error?.response?.data?.error ||
-          "Error while registering user!"
+          "Error while sending message!"
       );
       throw error; // Throw the error to propagate it for handling or logging
     }
@@ -56,7 +56,7 @@ export const markChatsAsReadAsync = createAsyncThunk(
       toast.error(
         error?.response?.data?.err ||
           error?.response?.data?.error ||
-          "Error while registering user!"
+          "Something went wrong!"
       );
       throw error; // Throw the error to propagate it for handling or logging
     }
