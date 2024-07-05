@@ -55,10 +55,15 @@ const Home = () => {
     });
   }, []);
 
-  //fetch all friends and non friend users who have either received a message from current user or have sent message to current user on component mount.
-  // useEffect(() => {
+  useEffect(() => {
+    dispatch(
+      markChatsAsReadAsync({ userId: user._id, senderId: selectedContact._id })
+    ).then(() => {
+      dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
+    });
+  }, [selectedContact]);
 
-  // }, [showUnread]);
+  //fetch all friends and non friend users who have either received a message from current user or have sent message to current user on component mount.
 
   return (
     <div className='w-full min-h-screen bg-bg_primary relative'>

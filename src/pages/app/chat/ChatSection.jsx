@@ -57,8 +57,6 @@ const ChatSection = ({ user, friend }) => {
         bottomRef.current.scrollIntoView({ behavior: "smooth" });
       }
     });
-    dispatch(markChatsAsReadAsync({ userId: user._id, senderId: friend._id }));
-    dispatch(getChatFriendsAndUsers({ userId: user._id }));
   }, [friend]);
 
   if (loading) {
