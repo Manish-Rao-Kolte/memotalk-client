@@ -61,12 +61,12 @@ const Home = () => {
   }, [incomingMessage?._id]);
 
   return (
-    <div className='w-full min-h-screen bg-bg_primary relative'>
+    <div className='w-full h-screen bg-bg_primary relative overflow-scroll'>
       <div
         className='w-full h-32 bg-header relative'
         onClick={() => setSelectedContact(null)}
       ></div>
-      <div className='absolute w-full h-full top-0 lg:w-[88%] lg:h-[96%] bg-bg_secondary z-10 lg:top-[2%] lg:left-[6%] flex'>
+      <div className='absolute w-full h-full top-0 lg:w-[88%] lg:h-[96%] min-w-[35rem] bg-bg_secondary z-10 lg:top-[2%] lg:left-[6%] flex overflow-x-scroll'>
         <Aside user={currentUser} avatarPath={avatarPath} />
         {/* center section starts from here */}
         <div className='relative'>
@@ -146,7 +146,7 @@ const Home = () => {
           />
         ) : (
           <div>
-            <div className='h-full w-[54.7vw] min-w-[37rem] flex justify-center items-center'>
+            <div className='h-full w-[54.7vw] min-w-[37rem] flex justify-center items-center overflow-x-scroll'>
               <div className='animate-pulse flex flex-col items-center gap-y-2'>
                 <div className='w-44 h-44 rounded-full overflow-hidden'>
                   <img src={avatarPath} alt='avatar' className='object-cover' />

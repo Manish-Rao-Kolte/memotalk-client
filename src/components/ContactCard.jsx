@@ -37,7 +37,7 @@ const ContactCard = ({
     <div
       className={`${
         selectedContact?._id === friend?._id && "bg-card_hover"
-      } contactcard flex h-fit justify-between items-center hover:bg-card_hover hover:cursor-pointer pl-2 overflow-hidden`}
+      } contactcard flex h-fit justify-between items-center hover:bg-card_hover hover:cursor-pointer pl-2 overflow-hidden gap-x-2`}
       onClick={handleContactCardClickToViewMessages}
     >
       <div className='box-border h-14 w-14 flex justify-center items-center rounded-full overflow-hidden'>

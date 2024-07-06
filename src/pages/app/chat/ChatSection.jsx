@@ -104,7 +104,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   }
 
   return (
-    <div className='h-full w-[54.7vw] min-w-[37rem] flex flex-col items-center'>
+    <div className='h-full lg:w-[54.7vw] min-w-[35rem] flex flex-col items-center overflow-hidden'>
       {/* header starts here */}
       <div className='w-full h-[7%] flex justify-between items-center px-4'>
         <div className='flex justify-start items-center gap-x-4'>
@@ -179,7 +179,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
         <Input
           placeholder='Type a message'
           value={message}
-          className='w-[86%] input-reset-ring border-none text-base rounded px-5'
+          className='w-[86%] h-[65%] input-reset-ring border-none text-base rounded px-5'
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleSendMessage}
         />
