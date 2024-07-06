@@ -76,8 +76,8 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   useEffect(() => {
     dispatch(getChatsAsync({ user: user._id, friend: friend._id })).then(
       (result) => {
-        dispatch(setInitialChats(result?.payload?.data));
         setChatsToShow(result?.payload?.data);
+        dispatch(setInitialChats(result?.payload?.data));
         dispatch(getChatFriendsAndUsers({ userId: user._id }));
       }
     );
