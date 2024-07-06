@@ -63,15 +63,26 @@ export const markChatsAsReadAsync = createAsyncThunk(
   }
 );
 
+export const markChatAsReadAsync = createAsyncThunk(
+  "chat/markChatAsReadAsync",
+  async (payload) => {
+    try {
+      const result = await apiCall("/messages/update-one", "patch", payload);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    setInitialChat: (state, action) => {
+    setInitialChats: (state, action) => {
       state.chats = action.payload;
     },
     addMessageToChats: (state, action) => {
-      console.log(action.payload);
       state.chats = [...state.chats, action.payload];
     },
   },
@@ -88,16 +99,10 @@ const chatSlice = createSlice({
         state.error = null;
       })
       .addCase(getChatsAsync.rejected, (state, action) => {
-        state.chats = [];
         state.loading = false;
         state.error = action.error.message || "Failed fetching chat";
       })
-      .addCase(createChatMessageAsync.pending, (state, action) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(createChatMessageAsync.fulfilled, (state, action) => {
-        state.chats = [...state.chats, action.payload?.data];
         state.loading = false;
         state.error = null;
       })
@@ -112,10 +117,18 @@ const chatSlice = createSlice({
       .addCase(markChatsAsReadAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed fetching chat";
+      })
+      .addCase(markChatAsReadAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(markChatAsReadAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed fetching chat";
       });
   },
 });
 
 export const chatReducer = chatSlice.reducer;
-export const { setInitialChat, addMessageToChats } = chatSlice.actions;
+export const { setInitialChats, addMessageToChats } = chatSlice.actions;
 export const chatSelector = (state) => state.chatReducer;

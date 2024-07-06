@@ -3,6 +3,7 @@ import ChatMessage from "@/components/ChatMessage";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import CustomeTooltip from "@/components/Tooltip";
+import Picker from "emoji-picker-react";
 import { CiMenuKebab } from "react-icons/ci";
 import { GrSearch } from "react-icons/gr";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
@@ -12,57 +13,75 @@ import { PiPaperPlaneRightFill } from "react-icons/pi";
 import socket from "@/lib/socket";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addMessageToChats,
   chatSelector,
   createChatMessageAsync,
   getChatsAsync,
-  markChatsAsReadAsync,
+  setInitialChats,
 } from "@/redux/reducers/chatReducer";
 import { getChatFriendsAndUsers } from "@/redux/reducers/userReducer";
 
-const ChatSection = ({ user, friend, incomingMessage }) => {
+const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   const dispatch = useDispatch();
   const { chats, loading } = useSelector(chatSelector);
   const [message, setMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [chatsToShow, setChatsToShow] = useState(chats);
   const bottomRef = useRef(null);
 
-  if (bottomRef.current) {
-    bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-  const handleSendMessage = () => {
-    dispatch(
-      createChatMessageAsync({
-        message,
-        sender: user._id,
-        recipient: friend._id,
-      })
-    )
-      .then((result) => {
-        socket.emit("sendMessage", {
-          message: result?.payload?.data,
-          recipientID: friend?._id,
+  const handleSendMessage = (e) => {
+    if (e.type === "click" || e.key === "Enter") {
+      dispatch(
+        createChatMessageAsync({
+          message,
+          sender: user._id,
+          recipient: friend._id,
+        })
+      )
+        .then((result) => {
+          socket.emit("sendMessage", {
+            message: result?.payload?.data,
+            recipientID: friend?._id,
+          });
+          setChatsToShow((prev) => [...prev, result?.payload?.data]);
+          dispatch(getChatFriendsAndUsers({ userId: user._id }));
+        })
+        .finally(() => {
+          setMessage("");
+          scrollToBottom("auto");
         });
-        dispatch(getChatFriendsAndUsers({ userId: user._id }));
-      })
-      .finally(() => {
-        setMessage("");
-        if (bottomRef.current) {
-          bottomRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-      });
+    }
   };
 
-  useEffect(() => {
+  const onEmojiClick = (emojiObject) => {
+    setMessage((prev) => prev + emojiObject.emoji);
+  };
+
+  const scrollToBottom = (behavior) => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current.scrollIntoView({ behavior });
     }
-    dispatch(markChatsAsReadAsync({ userId: user._id, senderId: friend._id }))
-      .then(() => {
-        dispatch(getChatsAsync({ user: user._id, friend: friend._id }));
-      })
-      .finally(() => {
+  };
+  scrollToBottom("auto");
+
+  useEffect(() => {
+    dispatch(getChatFriendsAndUsers({ userId: user._id }));
+    if (user._id === incomingMessage?.recipient) {
+      dispatch(addMessageToChats(incomingMessage));
+      setChatsToShow((prev) => [...prev, incomingMessage]);
+      scrollToBottom("auto");
+    }
+  }, [incomingMessage?._id]);
+
+  useEffect(() => {
+    dispatch(getChatsAsync({ user: user._id, friend: friend._id })).then(
+      (result) => {
+        dispatch(setInitialChats(result?.payload?.data));
+        setChatsToShow(result?.payload?.data);
         dispatch(getChatFriendsAndUsers({ userId: user._id }));
-      });
-  }, [incomingMessage, friend]);
+      }
+    );
+  }, [friend]);
 
   if (loading) {
     return (
@@ -120,38 +139,58 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
 
       {/* body starts here */}
       <div className='w-full h-[86%] bg-chat-bakground px-16 overflow-y-scroll'>
-        {chats?.map((message, index) => {
-          return <ChatMessage key={index} message={message} user={user} />;
+        {chatsToShow?.map((chat, index) => {
+          return (
+            <ChatMessage
+              key={index}
+              message={chat}
+              user={user}
+              friend={friend}
+            />
+          );
         })}
         <div ref={bottomRef} />
       </div>
 
       {/* footer starts here */}
       <div className='w-full h-[7%] flex items-center px-4 gap-x-3'>
-        <MdOutlineEmojiEmotions className='w-[4%] h-[45%] text-icon hover:cursor-pointer' />
+        <div className='w-[4%] h-[45%] relative'>
+          <MdOutlineEmojiEmotions
+            className='w-[100%] h-[100%] text-icon hover:cursor-pointer hover:text-gray-700'
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          />
+          {showEmojiPicker && (
+            <Picker
+              onEmojiClick={onEmojiClick}
+              className='absolute top-0 left-[50%] -translate-x-[50%] -translate-y-[110%]'
+            />
+          )}
+        </div>
         <CustomeTooltip
           active={false}
           hoverData={"Attach"}
           className='w-[4%] h-[50%]'
           to={"/api"}
-          iconComponent={<FaPlus className=' w-6 h-6 text-icon' />}
+          iconComponent={
+            <FaPlus className=' w-6 h-6 text-icon hover:text-gray-700' />
+          }
           side={"bottom"}
         />
         <Input
-          type='text'
           placeholder='Type a message'
           value={message}
           className='w-[86%] input-reset-ring border-none text-base rounded px-5'
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleSendMessage}
         />
         {message?.length > 0 ? (
           <PiPaperPlaneRightFill
             disabled={loading}
-            className='w-[4%] h-[45%] text-icon hover:cursor-pointer ml-1'
+            className='w-[4%] h-[45%] text-icon hover:cursor-pointer hover:text-gray-700 ml-1'
             onClick={handleSendMessage}
           />
         ) : (
-          <FaMicrophone className='w-[4%] h-[45%] text-icon hover:cursor-pointer ml-1' />
+          <FaMicrophone className='w-[4%] h-[45%] text-icon hover:cursor-pointer hover:text-gray-700 ml-1' />
         )}
       </div>
     </div>

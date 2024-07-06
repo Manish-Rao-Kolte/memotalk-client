@@ -56,10 +56,9 @@ const Home = () => {
     });
   }, []);
 
-  //fetch list of users with message when ther eis new message to rearrange.
   useEffect(() => {
     dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
-  }, [incomingMessage]);
+  }, [incomingMessage?._id]);
 
   return (
     <div className='w-full min-h-screen bg-bg_primary relative'>
@@ -95,6 +94,26 @@ const Home = () => {
                 {/* show all the friends and non friend users who has a coversation with current user */}
                 {chatUsers?.map((chatUser) => {
                   if (chatUser._id === currentUser._id) return;
+                  if (showUnread) {
+                    if (chatUser.unreadMessagesCount > 0) {
+                      return (
+                        <ContactCard
+                          src={chatUser.avatar.url || "/demo_avatar.avif"}
+                          alt={chatUser.username}
+                          unreadCount={chatUser.unreadMessagesCount}
+                          message={"Heyyy buddy how are you doing?"}
+                          name={chatUser.fullname}
+                          time={chatUser.lastMessageTime || ""}
+                          key={chatUser._id}
+                          friend={chatUser}
+                          currentUser={currentUser}
+                          selectedContact={selectedContact}
+                          setSelectedContact={setSelectedContact}
+                        />
+                      );
+                    }
+                    return;
+                  }
                   return (
                     <ContactCard
                       src={chatUser.avatar.url || "/demo_avatar.avif"}
@@ -123,6 +142,7 @@ const Home = () => {
             user={currentUser}
             friend={selectedContact}
             incomingMessage={incomingMessage}
+            setIncomingMessage={setIncomingMessage}
           />
         ) : (
           <div>

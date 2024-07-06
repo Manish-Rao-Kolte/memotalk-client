@@ -56,7 +56,7 @@ const ContactCard = ({
           </p>
           <div className='flex gap-x-1'>
             {unreadCount >= 1 && (
-              <div className='h-4 w-4 rounded-full flex justify-center items-center overflow-hidden bg-green_legend p-1'>
+              <div className='h-5 w-5 rounded-full flex justify-center items-center overflow-hidden bg-green_legend p-1'>
                 <span className='text-white text-xs font-semibold text-center'>
                   {unreadCount}
                 </span>
