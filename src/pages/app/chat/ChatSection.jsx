@@ -104,7 +104,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   }
 
   return (
-    <div className='h-full lg:w-[54.7vw] min-w-[35rem] flex flex-col items-center overflow-hidden'>
+    <div className='h-full lg:w-[58.65vw] min-w-[37rem] flex flex-col items-center overflow-hidden'>
       {/* header starts here */}
       <div className='w-full h-[7%] flex justify-between items-center px-4'>
         <div className='flex justify-start items-center gap-x-4'>

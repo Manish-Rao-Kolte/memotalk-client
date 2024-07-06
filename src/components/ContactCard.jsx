@@ -37,19 +37,19 @@ const ContactCard = ({
     <div
       className={`${
         selectedContact?._id === friend?._id && "bg-card_hover"
-      } contactcard flex h-fit justify-between items-center hover:bg-card_hover hover:cursor-pointer pl-2 overflow-hidden gap-x-2`}
+      } contactcard flex h-fit justify-between items-center hover:bg-card_hover hover:cursor-pointer pl-2 overflow-hidden  lg:gap-x-2`}
       onClick={handleContactCardClickToViewMessages}
     >
-      <div className='box-border h-14 w-14 flex justify-center items-center rounded-full overflow-hidden'>
+      <div className='box-border h-12 w-12 lg:h-14 lg:w-14 flex justify-center items-center rounded-full overflow-hidden'>
         <img src={src} alt={alt} className='object-cover' />
       </div>
       {/* card data starts from here */}
-      <div className='h-18 w-[85%] border-card_hover border-t border-b py-0.5 pr-2 flex flex-col justify-center'>
+      <div className='h-15 lg:h-18 w-[75%] lg:w-[85%] border-card_hover border-t border-b py-0.5 pr-2 flex flex-col justify-center'>
         <div className='w-full flex justify-between items-center'>
-          <p className='text-xl'> {name} </p>
-          <p className='text-sm'> {formatTo12Hour(time)} </p>
+          <p className='text-base lg:text-xl'> {name} </p>
+          <p className='text-xs lg:text-sm'> {formatTo12Hour(time)} </p>
         </div>
-        <div className='text-sm flex items-center justify-between overflow-hidden break-all p-3 pl-0'>
+        <div className='text-xs lg:text-sm flex items-center justify-between overflow-hidden break-all p-3 pl-0'>
           <p className='overflow-hidden h-5'>
             {" "}
             {friend.lastMessageContent || message}{" "}
