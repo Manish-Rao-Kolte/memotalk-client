@@ -66,7 +66,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
 
   useEffect(() => {
     dispatch(getChatFriendsAndUsers({ userId: user._id }));
-    if (user._id === incomingMessage?.recipient) {
+    if (friend._id === incomingMessage?.sender) {
       dispatch(addMessageToChats(incomingMessage));
       setChatsToShow((prev) => [...prev, incomingMessage]);
       scrollToBottom("auto");
