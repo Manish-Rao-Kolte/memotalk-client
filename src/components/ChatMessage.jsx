@@ -44,9 +44,10 @@ const ChatMessage = ({ message, image, user, friend }) => {
     if (!message.read) {
       if (friend._id === message.sender) {
         dispatch(markChatAsReadAsync({ messageId: message._id })).then(() => {
-          socket.emit("messageRead", message._id);
+          dispatch(getChatFriendsAndUsers({ userId: user._id })).then(() => {
+            socket.emit("messageRead", message._id);
+          });
         });
-        dispatch(getChatFriendsAndUsers({ userId: user._id }));
       }
     }
     // Listen for `messageRead` events from the server
