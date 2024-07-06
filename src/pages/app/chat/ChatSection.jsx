@@ -104,7 +104,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   }
 
   return (
-    <div className='h-full lg:w-[58.65vw] min-w-[37rem] flex flex-col items-center overflow-hidden'>
+    <div className='h-full w-[65.65vw] lg:w-[58.65vw] min-w-[25rem] lg:min-w-[37rem] flex flex-col items-center overflow-hidden'>
       {/* header starts here */}
       <div className='w-full h-[7%] flex justify-between items-center px-4'>
         <div className='flex justify-start items-center gap-x-4'>
@@ -138,7 +138,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
       </div>
 
       {/* body starts here */}
-      <div className='w-full h-[86%] bg-chat-bakground px-16 overflow-y-scroll'>
+      <div className='w-full h-[86%] bg-chat-bakground px-4 lg:px-8 xl:px-12 xxl:px-14 overflow-y-scroll'>
         {chatsToShow?.map((chat, index) => {
           return (
             <ChatMessage
@@ -162,7 +162,9 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
           {showEmojiPicker && (
             <Picker
               onEmojiClick={onEmojiClick}
-              className='absolute top-0 left-[50%] -translate-x-[50%] -translate-y-[110%]'
+              className={`absolute top-0 left-[50%] -translate-x-[50%] -translate-y-[110%] ${
+                showEmojiPicker ? "" : "hidden"
+              } `}
             />
           )}
         </div>

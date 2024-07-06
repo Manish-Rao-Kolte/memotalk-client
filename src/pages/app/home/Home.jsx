@@ -70,7 +70,7 @@ const Home = () => {
         <Aside user={currentUser} avatarPath={avatarPath} />
         {/* center section starts from here */}
         <div className='relative'>
-          <div className='h-full w-[15rem] lg:w-[28vw] lg:min-w-[25rem] bg-white pt-4 flex flex-col'>
+          <div className='h-full w-[15rem] lg:w-[30vw] lg:min-w-[23rem] bg-white pt-4 flex flex-col'>
             <CenterSectionHeaderAndBody
               setSelectedContact={setSelectedContact}
               showAll={showAll}
@@ -146,7 +146,7 @@ const Home = () => {
           />
         ) : (
           <div>
-            <div className='h-full w-[58.65vw] min-w-[37rem] flex justify-center items-center overflow-x-scroll'>
+            <div className='h-full w-[58.65vw] min-w-[37rem] lg:min-w-[50.5rem] flex justify-center items-center overflow-x-scroll'>
               <div className='animate-pulse flex flex-col items-center gap-y-2'>
                 <div className='w-44 h-44 rounded-full overflow-hidden'>
                   <img src={avatarPath} alt='avatar' className='object-cover' />
