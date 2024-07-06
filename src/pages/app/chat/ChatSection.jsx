@@ -104,7 +104,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   }
 
   return (
-    <div className='h-full w-[65.65vw] lg:w-[58.65vw] min-w-[25rem] lg:min-w-[37rem] flex flex-col items-center overflow-hidden'>
+    <div className='h-full w-[65.65vw] lg:w-[58.65vw] min-w-[29rem] lg:min-w-[37rem] flex flex-col items-center overflow-hidden'>
       {/* header starts here */}
       <div className='w-full h-[7%] flex justify-between items-center px-4'>
         <div className='flex justify-start items-center gap-x-4'>
@@ -154,9 +154,9 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
 
       {/* footer starts here */}
       <div className='w-full h-[7%] flex items-center px-4 gap-x-3'>
-        <div className='w-[4%] h-[45%] relative'>
+        <div className='w-7 h-7 relative'>
           <MdOutlineEmojiEmotions
-            className='w-[100%] h-[100%] text-icon hover:cursor-pointer hover:text-gray-700'
+            className='w-7 h-7 text-icon hover:cursor-pointer hover:text-gray-700'
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           />
           {showEmojiPicker && (
@@ -171,10 +171,10 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
         <CustomeTooltip
           active={false}
           hoverData={"Attach"}
-          className='w-[4%] h-[50%]'
+          className='w-7 h-7'
           to={"/api"}
           iconComponent={
-            <FaPlus className=' w-6 h-6 text-icon hover:text-gray-700' />
+            <FaPlus className=' w-7 h-7 text-icon hover:text-gray-700' />
           }
           side={"bottom"}
         />
@@ -188,11 +188,11 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
         {message?.length > 0 ? (
           <PiPaperPlaneRightFill
             disabled={loading}
-            className='w-[4%] h-[45%] text-icon hover:cursor-pointer hover:text-gray-700 ml-1'
+            className='w-7 h-7 text-icon hover:cursor-pointer hover:text-gray-700 ml-1'
             onClick={handleSendMessage}
           />
         ) : (
-          <FaMicrophone className='w-[4%] h-[45%] text-icon hover:cursor-pointer hover:text-gray-700 ml-1' />
+          <FaMicrophone className='w-7 h-7 text-icon hover:cursor-pointer hover:text-gray-700 ml-1' />
         )}
       </div>
     </div>

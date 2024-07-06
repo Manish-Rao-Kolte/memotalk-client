@@ -61,12 +61,12 @@ const Home = () => {
   }, [incomingMessage?._id]);
 
   return (
-    <div className='w-full h-screen bg-bg_primary relative overflow-scroll'>
+    <div className='w-full min-h-screen bg-bg_primary relative'>
       <div
         className='w-full h-32 bg-header relative'
         onClick={() => setSelectedContact(null)}
       ></div>
-      <div className='absolute w-full h-full top-0 xl:w-[90%] xl:h-[96%] min-w-[35rem] bg-bg_secondary z-10 xl:top-[2%] xl:left-[5%] flex overflow-x-scroll'>
+      <div className='absolute w-full h-full top-0 xl:w-[90%] xl:h-[96%] min-w-[35rem] bg-bg_secondary z-10 xl:top-[2%] xl:left-[5%] flex'>
         <Aside user={currentUser} avatarPath={avatarPath} />
         {/* center section starts from here */}
         <div className='relative'>
@@ -146,7 +146,7 @@ const Home = () => {
           />
         ) : (
           <div>
-            <div className='h-full w-[58.65vw] min-w-[37rem] lg:min-w-[50.5rem] flex justify-center items-center overflow-x-scroll'>
+            <div className='h-full lg:[54vw] xl:w-[55vw] 2xl:w-[55.5vw] lg:max-w-[65vw] min-w-[29rem] lg:min-w-[37rem] xl:h-[100%] xl-w-[100%] flex justify-center items-center'>
               <div className='animate-pulse flex flex-col items-center gap-y-2'>
                 <div className='w-44 h-44 rounded-full overflow-hidden'>
                   <img src={avatarPath} alt='avatar' className='object-cover' />
