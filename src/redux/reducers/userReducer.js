@@ -104,7 +104,7 @@ export const addFriendsAsync = createAsyncThunk(
   }
 );
 
-export const getChatFriendsAndUsers = createAsyncThunk(
+export const getChatFriendsAndUsersAsync = createAsyncThunk(
   "user/getChatFriendsAandUsers",
   async (payload) => {
     try {
@@ -203,15 +203,15 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Adding friends failed";
       })
-      .addCase(getChatFriendsAndUsers.pending, (state) => {
+      .addCase(getChatFriendsAndUsersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getChatFriendsAndUsers.fulfilled, (state, action) => {
+      .addCase(getChatFriendsAndUsersAsync.fulfilled, (state, action) => {
         state.chatUsers = [...action.payload?.data];
         state.loading = false;
       })
-      .addCase(getChatFriendsAndUsers.rejected, (state, action) => {
+      .addCase(getChatFriendsAndUsersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Fethcing users failed";
       });

@@ -7,7 +7,7 @@ import Aside from "@/components/Aside";
 import CenterSectionHeaderAndBody from "@/components/CenterSectionHeaderAndBody";
 import {
   getAllUsersAsync,
-  getChatFriendsAndUsers,
+  getChatFriendsAndUsersAsync,
   signOutUserAsync,
   userSelector,
 } from "@/redux/reducers/userReducer";
@@ -41,14 +41,17 @@ const Home = () => {
         navigate("/login");
         return;
       })
-      .finally(() => {});
+      .finally(() => {
+        socket.disconnect();
+      });
   };
 
   //connect to the socket on component mount and get all available user to show in add friends section.
   useEffect(() => {
     socket.auth = { userID: currentUser?._id };
     socket.connect();
-    dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
+    socket.emit("userConnect", { userId: currentUser._id });
+    dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
     dispatch(getAllUsersAsync()).then(() => {
       return () => {
         socket.disconnect();
@@ -57,7 +60,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getChatFriendsAndUsers({ userId: currentUser._id }));
+    dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
   }, [incomingMessage?._id]);
 
   return (
@@ -81,7 +84,7 @@ const Home = () => {
               setShowGroups={setShowGroups}
             />
             {/* center footer starts from here */}
-            <div className='max-h-full custom-scrollbar overflow-y-auto mt-3'>
+            <div className='max-h-full custom-scrollbar overflow-y-auto mt-3 relative'>
               <div className='flex flex-col '>
                 <div className='flex h-14 items-center pl-2 hover:cursor-pointer'>
                   <div className='box-border h-12 w-14 flex justify-center items-center'>
@@ -142,7 +145,6 @@ const Home = () => {
             user={currentUser}
             friend={selectedContact}
             incomingMessage={incomingMessage}
-            setIncomingMessage={setIncomingMessage}
           />
         ) : (
           <div>

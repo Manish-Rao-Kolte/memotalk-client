@@ -19,14 +19,20 @@ import {
   getChatsAsync,
   setInitialChats,
 } from "@/redux/reducers/chatReducer";
-import { getChatFriendsAndUsers } from "@/redux/reducers/userReducer";
+import {
+  getChatFriendsAndUsersAsync,
+  userSelector,
+} from "@/redux/reducers/userReducer";
+import { formatDate } from "@/lib/utils";
 
-const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
+const ChatSection = ({ user, friend, incomingMessage }) => {
   const dispatch = useDispatch();
   const { chats, loading } = useSelector(chatSelector);
+  const { chatUsers } = useSelector(userSelector);
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [chatsToShow, setChatsToShow] = useState(chats);
+  const [online, setOnline] = useState(false);
   const bottomRef = useRef(null);
 
   const handleSendMessage = (e) => {
@@ -44,7 +50,8 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
             recipientID: friend?._id,
           });
           setChatsToShow((prev) => [...prev, result?.payload?.data]);
-          dispatch(getChatFriendsAndUsers({ userId: user._id }));
+          setShowEmojiPicker(false);
+          dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
         })
         .finally(() => {
           setMessage("");
@@ -65,7 +72,6 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
   scrollToBottom("auto");
 
   useEffect(() => {
-    dispatch(getChatFriendsAndUsers({ userId: user._id }));
     if (friend._id === incomingMessage?.sender) {
       dispatch(addMessageToChats(incomingMessage));
       setChatsToShow((prev) => [...prev, incomingMessage]);
@@ -78,10 +84,18 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
       (result) => {
         setChatsToShow(result?.payload?.data);
         dispatch(setInitialChats(result?.payload?.data));
-        dispatch(getChatFriendsAndUsers({ userId: user._id }));
+        dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
+        if (friend?.active) {
+          setOnline(true);
+        } else {
+          setOnline(false);
+        }
       }
     );
-  }, [friend]);
+    return () => {
+      setChatsToShow(chats || []);
+    };
+  }, [friend?._id]);
 
   if (loading) {
     return (
@@ -108,14 +122,26 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
       {/* header starts here */}
       <div className='w-full h-[7%] flex justify-between items-center px-4'>
         <div className='flex justify-start items-center gap-x-4'>
-          <div className='box-border h-10 w-10 flex justify-center items-center rounded-full overflow-hidden hover:cursor-pointer'>
+          <div className='box-border h-12 w-12 flex justify-center items-center rounded-full overflow-hidden hover:cursor-pointer'>
             <img
               src={friend?.avatar?.url || "/demo_avatar.avif"}
               alt={friend?.username}
               className='object-cover'
             />
           </div>
-          <p className='text-base hover:cursor-pointer'>{friend?.username}</p>
+          <div className='flex flex-col justify-center'>
+            <p className='text-base hover:cursor-pointer'>{friend?.username}</p>
+            <span className='mt-0.5 lg:mt-1 text-xs'>
+              {friend?.active || online ? (
+                <div className='flex gap-x-0.5 lg:gap-x-1 items-center'>
+                  <div className='h-2 w-2 rounded-full bg-green-400' />
+                  <span className='text-xs'>Online</span>
+                </div>
+              ) : (
+                friend?.lastSeen && `Last seen ${formatDate(friend?.lastSeen)}`
+              )}
+            </span>
+          </div>
         </div>
         <div className='flex justify-end gap-x-3'>
           <CustomeTooltip
@@ -138,7 +164,7 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
       </div>
 
       {/* body starts here */}
-      <div className='w-full h-[86%] bg-chat-bakground px-4 lg:px-8 xl:px-12 xxl:px-14 overflow-y-scroll'>
+      <div className='w-full h-[86%] bg-chat-bakground px-4 lg:px-8 xl:px-12 xxl:px-14 overflow-y-scroll relative'>
         {chatsToShow?.map((chat, index) => {
           return (
             <ChatMessage
@@ -153,20 +179,15 @@ const ChatSection = ({ user, friend, incomingMessage, setIncomingMessage }) => {
       </div>
 
       {/* footer starts here */}
-      <div className='w-full h-[7%] flex items-center px-4 gap-x-3'>
+      <div className='w-full h-[7%] flex items-center px-4 gap-x-3 overflow-y-visible'>
         <div className='w-7 h-7 relative'>
           <MdOutlineEmojiEmotions
             className='w-7 h-7 text-icon hover:cursor-pointer hover:text-gray-700'
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           />
-          {showEmojiPicker && (
-            <Picker
-              onEmojiClick={onEmojiClick}
-              className={`absolute top-0 left-[50%] -translate-x-[50%] -translate-y-[110%] ${
-                showEmojiPicker ? "" : "hidden"
-              } `}
-            />
-          )}
+          <div className={`picker-wrapper ${showEmojiPicker ? "open" : ""}`}>
+            <Picker width={300} height={400} onEmojiClick={onEmojiClick} />
+          </div>
         </div>
         <CustomeTooltip
           active={false}

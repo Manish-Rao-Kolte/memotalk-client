@@ -1,6 +1,7 @@
 import socket from "@/lib/socket";
+import { getTimeAndDate } from "@/lib/utils";
 import { markChatAsReadAsync } from "@/redux/reducers/chatReducer";
-import { getChatFriendsAndUsers } from "@/redux/reducers/userReducer";
+import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
 import React, { useEffect, useState } from "react";
 import { MdEmojiEmotions } from "react-icons/md";
 import { RiShareForwardFill } from "react-icons/ri";
@@ -12,55 +13,28 @@ const ChatMessage = ({ message, image, user, friend }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [read, setRead] = useState(message.read);
 
-  const getTimeAndDate = (timestamp) => {
-    const date = new Date(timestamp);
-
-    // Options for formatting the date
-    const dateOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "Asia/Kolkata",
-    };
-    // Options for formatting time
-    const timeOptions = {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-      timeZone: "Asia/Kolkata",
-    };
-    return {
-      time: date
-        .toLocaleTimeString("en-US", timeOptions)
-        .replace("am", "AM")
-        .replace("pm", "PM"),
-      date: date.toLocaleDateString("en-US", dateOptions),
-    };
-  };
-
   const { time, date } = getTimeAndDate(message.createdAt);
+
+  // Listen for `messageRead` events from the server
+  socket.on("messageRead", ({ messageId, senderId }) => {
+    if (messageId === message._id && senderId === user._id) {
+      setRead(true); // Update local state to mark the message as read
+    }
+  });
 
   useEffect(() => {
     if (!message.read) {
       if (friend._id === message.sender) {
         dispatch(markChatAsReadAsync({ messageId: message._id })).then(() => {
-          dispatch(getChatFriendsAndUsers({ userId: user._id })).then(() => {
-            socket.emit("messageRead", message._id);
+          socket.emit("messageRead", {
+            messageId: message._id,
+            senderId: message.sender,
           });
+          dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
         });
       }
     }
-    // Listen for `messageRead` events from the server
-    socket.on("messageRead", (readMessageId) => {
-      if (readMessageId === message._id) {
-        setRead(true); // Update local state to mark the message as read
-      }
-    });
-    // Clean up the socket listener when the component unmounts
-    return () => {
-      socket.off("messageRead");
-    };
-  }, [message._id]);
+  }, [message]);
 
   return (
     <div
@@ -107,21 +81,23 @@ const ChatMessage = ({ message, image, user, friend }) => {
               message?.sender === user?._id
                 ? "bg-self-message-background"
                 : "bg-white"
-            } flex items-center justify-center rounded text-sm`}
+            } flex items-center justify-center rounded`}
             style={{ minWidth: "calc(100% - 2rem)" }}
           >
             <div
-              className={`relative break-all whitespace-pre-wrap px-2.5 py-1 w-full`}
+              className={`relative break-all whitespace-pre-wrap px-2.5 py-1 w-full text-sm `}
             >
-              <span>{message?.message}</span>
+              <span className={`${message?.sender === user?._id && "mr-2"}`}>
+                {message?.message}
+              </span>
               <span style={{ visibility: "hidden" }}>6:15 PM</span>
               <span
-                className={`absolute right-2.5 bottom-1 text-xs text-icon w-fit h-fit flex items-center gap-x-0.5`}
+                className={`absolute right-2.5 bottom-1 text-xs text-icon w-fit h-fit flex items-center gap-x-0.5 lg:gap-x-1`}
               >
                 {time}
                 {message?.sender === user?._id && (
                   <RiCheckDoubleFill
-                    className={`text-base ${
+                    className={`text-base lg:text-lg 2xl:text-xl ${
                       read ? "text-green-600" : "text-icon"
                     }`}
                   />

@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import socket from "@/lib/socket";
+import { formatTo12Hour } from "@/lib/utils";
+import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
+import React, { useEffect, useState } from "react";
 import { SlArrowDown } from "react-icons/sl";
+import { useDispatch } from "react-redux";
 
 const ContactCard = ({
   src,
@@ -13,25 +17,35 @@ const ContactCard = ({
   unreadCount,
   currentUser,
 }) => {
-  const formatTo12Hour = (timestamp) => {
-    const date = new Date(timestamp);
-
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-
-    const minutesFormatted = minutes < 10 ? "0" + minutes : minutes;
-
-    const strTime = hours + ":" + minutesFormatted + " " + ampm;
-    return strTime;
-  };
+  const dispatch = useDispatch();
 
   const handleContactCardClickToViewMessages = () => {
-    setSelectedContact(friend);
+    dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id })).then(
+      () => {
+        setSelectedContact(friend);
+      }
+    );
   };
+
+  useEffect(() => {
+    socket.on("userConnected", (userID) => {
+      dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
+      // if (userID === friend._id) {
+      //   setOnline(true);
+      // }
+    });
+    socket.on("userDisconnected", (userID) => {
+      dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
+      // if (userID === friend._id) {
+      //   setOnline(false);
+      // }
+    });
+
+    return () => {
+      socket.off("userConnected");
+      socket.off("userDisconnected");
+    };
+  }, []);
 
   return (
     <div
@@ -40,8 +54,15 @@ const ContactCard = ({
       } contactcard flex h-fit justify-between items-center hover:bg-card_hover hover:cursor-pointer pl-2 overflow-hidden lg:gap-x-2`}
       onClick={handleContactCardClickToViewMessages}
     >
-      <div className='box-border h-12 w-12 lg:h-14 lg:w-14 flex justify-center items-center rounded-full overflow-hidden'>
-        <img src={src} alt={alt} className='object-cover' />
+      <div className='box-border h-12 w-12 lg:h-14 lg:w-14 flex justify-center items-center rounded-full relative'>
+        <img
+          src={src}
+          alt={alt}
+          className='object-cover rounded-full h-full w-full'
+        />
+        {friend?.active && (
+          <div className='h-3 w-3 rounded-full bg-green-400 absolute right-0 bottom-0' />
+        )}
       </div>
       {/* card data starts from here */}
       <div className='h-14 lg:h-20 w-[75%] lg:w-[85%] border-card_hover border-t border-b py-0.5 pr-1 lg:pr-3 flex flex-col justify-center'>

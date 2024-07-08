@@ -12,9 +12,9 @@ const StartNewChat = ({
   const { chatUsers } = useSelector(userSelector);
   const user = JSON.parse(localStorage.getItem("user"));
   const userFriends =
-    user.friends?.filter(
+    user?.friends?.filter(
       (availableUser) =>
-        !chatUsers.some((friend) => friend._id === availableUser._id)
+        !chatUsers.some((friend) => friend?._id === availableUser?._id)
     ) || [];
 
   return (
