@@ -1,7 +1,7 @@
 import socket from "@/lib/socket";
 import { formatTo12Hour } from "@/lib/utils";
 import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
 import { useDispatch } from "react-redux";
 
@@ -9,8 +9,6 @@ const ContactCard = ({
   src,
   alt,
   name,
-  time,
-  message,
   setSelectedContact,
   selectedContact,
   friend,
@@ -30,15 +28,9 @@ const ContactCard = ({
   useEffect(() => {
     socket.on("userConnected", (userID) => {
       dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
-      // if (userID === friend._id) {
-      //   setOnline(true);
-      // }
     });
     socket.on("userDisconnected", (userID) => {
       dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
-      // if (userID === friend._id) {
-      //   setOnline(false);
-      // }
     });
 
     return () => {
@@ -71,12 +63,18 @@ const ContactCard = ({
             {" "}
             {name}{" "}
           </p>
-          <p className='text-xs lg:text-sm'> {formatTo12Hour(time)} </p>
+          <p className='text-xs lg:text-sm'>
+            {" "}
+            {friend?.messages[friend?.messages?.length - 1].createdAt &&
+              formatTo12Hour(
+                friend?.messages[friend?.messages?.length - 1].createdAt
+              )}{" "}
+          </p>
         </div>
         <div className='text-xs lg:text-sm flex items-center justify-between overflow-hidden break-all p-3 pl-0'>
           <p className='overflow-hidden h-5'>
             {" "}
-            {friend.lastMessageContent || message}{" "}
+            {friend?.messages[friend?.messages?.length - 1].message || ""}{" "}
           </p>
           <div className='flex gap-x-1'>
             {unreadCount >= 1 && (

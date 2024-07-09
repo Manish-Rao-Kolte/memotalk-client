@@ -12,7 +12,7 @@ const initialUserLoginData = {
 const LoginUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading } = useSelector(userSelector);
+  const { homeLoading } = useSelector(userSelector);
   const [userLoginData, setUserLoginData] = useState(initialUserLoginData);
 
   const handleLoginFormSubmit = (e) => {
@@ -20,8 +20,8 @@ const LoginUser = () => {
     dispatch(signInUserAsync(userLoginData))
       .then((result) => {
         if (result.error) return;
-        setUserLoginData(initialUserLoginData);
         navigate("/");
+        setUserLoginData(initialUserLoginData);
       })
       .catch((err) => {
         setUserLoginData(initialUserLoginData);
@@ -134,10 +134,10 @@ const LoginUser = () => {
             <div>
               <button
                 type='submit'
-                disabled={loading}
+                disabled={homeLoading}
                 className='flex w-full justify-center rounded-md bg-form-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-form-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-form-secondary'
               >
-                {loading ? (
+                {homeLoading ? (
                   <p className='animate-pulse'>Signing in...</p>
                 ) : (
                   "Sign in"
@@ -149,7 +149,7 @@ const LoginUser = () => {
           <p className='mt-10 text-center text-sm text-gray-500'>
             Not a member?
             <Link
-              to={"/register"}
+              to={!homeLoading && "/register"}
               className='font-semibold leading-6 text-form-primary hover:text-form-secondary'
             >
               {" "}

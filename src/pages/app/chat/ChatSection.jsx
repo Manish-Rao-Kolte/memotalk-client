@@ -13,26 +13,18 @@ import { PiPaperPlaneRightFill } from "react-icons/pi";
 import socket from "@/lib/socket";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addMessageToChats,
   chatSelector,
   createChatMessageAsync,
-  getChatsAsync,
-  setInitialChats,
 } from "@/redux/reducers/chatReducer";
-import {
-  getChatFriendsAndUsersAsync,
-  userSelector,
-} from "@/redux/reducers/userReducer";
+import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
 import { formatDate } from "@/lib/utils";
 
-const ChatSection = ({ user, friend, incomingMessage }) => {
+const ChatSection = ({ user, friend }) => {
   const dispatch = useDispatch();
-  const { chats, loading } = useSelector(chatSelector);
-  const { chatUsers } = useSelector(userSelector);
+  const { loading } = useSelector(chatSelector);
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [chatsToShow, setChatsToShow] = useState(chats);
-  const [online, setOnline] = useState(false);
+  const [chatsToShow, setChatsToShow] = useState(friend?.messages || []);
   const bottomRef = useRef(null);
 
   const handleSendMessage = (e) => {
@@ -49,13 +41,11 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
             message: result?.payload?.data,
             recipientID: friend?._id,
           });
-          setChatsToShow((prev) => [...prev, result?.payload?.data]);
-          setShowEmojiPicker(false);
           dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
+          setShowEmojiPicker(false);
         })
         .finally(() => {
           setMessage("");
-          scrollToBottom("auto");
         });
     }
   };
@@ -65,37 +55,16 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
   };
 
   const scrollToBottom = (behavior) => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior });
-    }
+    bottomRef.current?.scrollIntoView({ behavior });
   };
-  scrollToBottom("auto");
 
   useEffect(() => {
-    if (friend._id === incomingMessage?.sender) {
-      dispatch(addMessageToChats(incomingMessage));
-      setChatsToShow((prev) => [...prev, incomingMessage]);
-      scrollToBottom("auto");
-    }
-  }, [incomingMessage?._id]);
+    setChatsToShow(friend?.messages);
+  }, [friend?.messages]);
 
   useEffect(() => {
-    dispatch(getChatsAsync({ user: user._id, friend: friend._id })).then(
-      (result) => {
-        setChatsToShow(result?.payload?.data);
-        dispatch(setInitialChats(result?.payload?.data));
-        dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
-        if (friend?.active) {
-          setOnline(true);
-        } else {
-          setOnline(false);
-        }
-      }
-    );
-    return () => {
-      setChatsToShow(chats || []);
-    };
-  }, [friend?._id]);
+    scrollToBottom("auto");
+  }, [chatsToShow]);
 
   if (loading) {
     return (
@@ -132,7 +101,7 @@ const ChatSection = ({ user, friend, incomingMessage }) => {
           <div className='flex flex-col justify-center'>
             <p className='text-base hover:cursor-pointer'>{friend?.username}</p>
             <span className='mt-0.5 lg:mt-1 text-xs'>
-              {friend?.active || online ? (
+              {friend?.active ? (
                 <div className='flex gap-x-0.5 lg:gap-x-1 items-center'>
                   <div className='h-2 w-2 rounded-full bg-green-400' />
                   <span className='text-xs'>Online</span>

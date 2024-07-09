@@ -260,7 +260,7 @@ const RegisterUser = () => {
           <p className='mt-10 text-center text-sm text-gray-500'>
             Already have an account?
             <Link
-              to={"/login"}
+              to={!loading && "/login"}
               className='font-semibold leading-6 text-form-primary hover:text-form-secondary'
             >
               {" "}

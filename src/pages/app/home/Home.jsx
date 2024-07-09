@@ -13,11 +13,12 @@ import {
 } from "@/redux/reducers/userReducer";
 import socket from "@/lib/socket";
 import ChatSection from "../chat/ChatSection";
+import { Progress } from "@/components/ui/progress";
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, chatUsers, user } = useSelector(userSelector);
+  const { homeLoading, chatUsers, user } = useSelector(userSelector);
   const currentUser = user || JSON.parse(localStorage.getItem("user"));
   const avatarPath = currentUser?.avatar?.url || "/demo_avatar.avif";
   const [selectedContact, setSelectedContact] = useState(null);
@@ -63,6 +64,37 @@ const Home = () => {
     dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
   }, [incomingMessage?._id]);
 
+  useEffect(() => {
+    const data = chatUsers?.filter(
+      (user) => user?._id === selectedContact?._id
+    );
+    if (data?.length > 0) {
+      setSelectedContact({ ...data[0] });
+    }
+  }, [chatUsers]);
+
+  if (homeLoading) {
+    return (
+      <div className='h-screen w-screen flex flex-col items-center justify-center'>
+        <div className='w-[40%] flex flex-col justify-center items-center gap-y-3'>
+          <div className='flex justify-start items-center gap-x-2'>
+            <div className='h-10 w-10 flex justify-center items-center overflow-hidden rounded-full'>
+              <img
+                src='/new_logo.png'
+                alt='logo'
+                className='h-full w-full object-fill animate-pulse'
+              />
+            </div>
+            <span className='text-green-600 text-base font-semibold'>
+              Loading data...
+            </span>
+          </div>
+          <Progress value={50} className='w-[50%] h-1 bg-green-300' />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='w-full min-h-screen bg-bg_primary relative'>
       <div
@@ -104,9 +136,7 @@ const Home = () => {
                           src={chatUser.avatar.url || "/demo_avatar.avif"}
                           alt={chatUser.username}
                           unreadCount={chatUser.unreadMessagesCount}
-                          message={"Heyyy buddy how are you doing?"}
                           name={chatUser.fullname}
-                          time={chatUser.lastMessageTime || ""}
                           key={chatUser._id}
                           friend={chatUser}
                           currentUser={currentUser}

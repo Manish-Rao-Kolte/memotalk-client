@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 const initialState = {
   user: null,
   userFriends: [],
+  homeLoading: false,
   loading: false,
   error: null,
   allUsers: [],
@@ -136,6 +137,15 @@ const userSlice = createSlice({
     appendToChatUser: (state, action) => {
       state.chatUsers = [action.payload, ...state.chatUsers];
     },
+    addNewMessageToUserMessages: (state, action) => {
+      const usersList = [...state.chatUsers];
+      usersList?.forEach((user) => {
+        if (user._id === action.payload?.id) {
+          user?.messages?.push(action.payload?.message);
+        }
+      });
+      state.chatUsers = [...usersList];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -151,16 +161,16 @@ const userSlice = createSlice({
         state.error = action.error.message || "Registration failed";
       })
       .addCase(signInUserAsync.pending, (state) => {
-        state.loading = true;
+        state.homeLoading = true;
         state.error = null;
       })
       .addCase(signInUserAsync.fulfilled, (state, action) => {
         state.userFriends = [...action.payload?.data?.friends];
-        state.loading = false;
+        state.homeLoading = false;
         state.user = action.payload?.data;
       })
       .addCase(signInUserAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.homeLoading = false;
         state.error = action.error.message || "Signing in failed";
       })
       .addCase(signOutUserAsync.pending, (state) => {
@@ -219,6 +229,10 @@ const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
-export const { setInitialUser, addUserToUsers, appendToChatUser } =
-  userSlice.actions;
+export const {
+  setInitialUser,
+  addUserToUsers,
+  appendToChatUser,
+  addNewMessageToUserMessages,
+} = userSlice.actions;
 export const userSelector = (state) => state.userReducer;
