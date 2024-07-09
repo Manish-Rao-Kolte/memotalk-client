@@ -1,5 +1,5 @@
 import socket from "@/lib/socket";
-import { formatTo12Hour } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
 import React, { useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
@@ -66,9 +66,9 @@ const ContactCard = ({
           <p className='text-xs lg:text-sm'>
             {" "}
             {friend?.messages[friend?.messages?.length - 1].createdAt &&
-              formatTo12Hour(
+              formatDate(
                 friend?.messages[friend?.messages?.length - 1].createdAt
-              )}{" "}
+              ).split(",")[0]}{" "}
           </p>
         </div>
         <div className='text-xs lg:text-sm flex items-center justify-between overflow-hidden break-all p-3 pl-0'>

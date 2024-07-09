@@ -64,7 +64,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: white; /* Color of the scrollbar track */
+  background: inherit; /* Color of the scrollbar track */
 }
 
 ::-webkit-scrollbar-thumb {

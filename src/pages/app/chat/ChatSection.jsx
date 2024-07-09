@@ -17,7 +17,7 @@ import {
   createChatMessageAsync,
 } from "@/redux/reducers/chatReducer";
 import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatDateForChats } from "@/lib/utils";
 
 const ChatSection = ({ user, friend }) => {
   const dispatch = useDispatch();
@@ -86,6 +86,14 @@ const ChatSection = ({ user, friend }) => {
     );
   }
 
+  // Group messages by date
+  const groupedChats = chatsToShow.reduce((acc, chat) => {
+    const date = formatDateForChats(chat.createdAt);
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(chat);
+    return acc;
+  }, {});
+
   return (
     <div className='h-full w-[65.65vw] lg:w-[58.65vw] min-w-[29rem] lg:min-w-[37rem] flex flex-col items-center overflow-hidden'>
       {/* header starts here */}
@@ -134,16 +142,21 @@ const ChatSection = ({ user, friend }) => {
 
       {/* body starts here */}
       <div className='w-full h-[86%] bg-chat-bakground px-4 lg:px-8 xl:px-12 xxl:px-14 overflow-y-scroll relative'>
-        {chatsToShow?.map((chat, index) => {
-          return (
-            <ChatMessage
-              key={index}
-              message={chat}
-              user={user}
-              friend={friend}
-            />
-          );
-        })}
+        {Object.entries(groupedChats).map(([date, chats]) => (
+          <div key={date} className='date-section'>
+            <div className='bg-slate-200 px-4 py-1 rounded mx-auto sticky top-1 w-fit text-center text-sm bg-opacity-25 backdrop-blur-sm shadow shadow-slate-400'>
+              {date}
+            </div>
+            {chats.map((chat) => (
+              <ChatMessage
+                key={chat._id}
+                message={chat}
+                user={user}
+                friend={friend}
+              />
+            ))}
+          </div>
+        ))}
         <div ref={bottomRef} />
       </div>
 

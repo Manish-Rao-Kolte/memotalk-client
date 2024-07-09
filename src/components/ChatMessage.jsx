@@ -12,29 +12,34 @@ const ChatMessage = ({ message, image, user, friend }) => {
   const dispatch = useDispatch();
   const [showEmoji, setShowEmoji] = useState(false);
   const [read, setRead] = useState(message.read);
-
-  const { time, date } = getTimeAndDate(message.createdAt);
+  const { time } = getTimeAndDate(message.createdAt);
 
   // Listen for `messageRead` events from the server
-  socket.on("messageRead", ({ messageId, senderId }) => {
-    if (messageId === message._id && senderId === user._id) {
-      setRead(true); // Update local state to mark the message as read
-    }
-  });
+  useEffect(() => {
+    const handleRead = ({ messageId, senderId }) => {
+      if (messageId === message._id && senderId === user._id) {
+        setRead(true); // Update local state to mark the message as read
+      }
+    };
+
+    socket.on("messageRead", handleRead);
+
+    return () => {
+      socket.off("messageRead", handleRead);
+    };
+  }, [message._id, user._id]);
 
   useEffect(() => {
-    if (!message.read) {
-      if (friend._id === message.sender) {
-        dispatch(markChatAsReadAsync({ messageId: message._id })).then(() => {
-          socket.emit("messageRead", {
-            messageId: message._id,
-            senderId: message.sender,
-          });
-          dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
+    if (!message.read && friend._id === message.sender) {
+      dispatch(markChatAsReadAsync({ messageId: message._id })).then(() => {
+        socket.emit("messageRead", {
+          messageId: message._id,
+          senderId: message.sender,
         });
-      }
+        dispatch(getChatFriendsAndUsersAsync({ userId: user._id }));
+      });
     }
-  }, [message]);
+  }, [message, friend._id, user._id, dispatch]);
 
   return (
     <div
