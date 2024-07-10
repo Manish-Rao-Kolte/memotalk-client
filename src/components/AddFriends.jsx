@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  addFriendsAsync,
-  // getAllUsersAsync,
-  userSelector,
-} from "@/redux/reducers/userReducer";
+import { addFriendsAsync, userSelector } from "@/redux/reducers/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { IoCloseOutline } from "react-icons/io5";
 import { Button } from "./ui/button";

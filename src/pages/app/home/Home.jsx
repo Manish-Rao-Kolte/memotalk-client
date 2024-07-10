@@ -96,12 +96,12 @@ const Home = () => {
   }
 
   return (
-    <div className='w-full min-h-screen bg-bg_primary relative'>
+    <div className='w-full min-h-screen relative bg-gradient-to-b from-chat-bakground from-3% to-bg_primary to-60%'>
       <div
         className='w-full h-32 bg-header relative'
         onClick={() => setSelectedContact(null)}
       ></div>
-      <div className='absolute w-full h-full top-0 xl:w-[90%] xl:h-[96%] min-w-[35rem] bg-bg_secondary z-10 xl:top-[2%] xl:left-[5%] flex'>
+      <div className='absolute w-full h-full top-0 xl:w-[90%] xl:h-[96%] min-w-[35rem] bg-bg_secondary z-10 xl:top-[2%] xl:left-[5%] flex shadow-sm shadow-slate-400'>
         <Aside user={currentUser} avatarPath={avatarPath} />
         {/* center section starts from here */}
         <div className='relative'>

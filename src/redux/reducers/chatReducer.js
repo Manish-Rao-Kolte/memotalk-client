@@ -102,6 +102,10 @@ const chatSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed fetching chat";
       })
+      .addCase(createChatMessageAsync.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(createChatMessageAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;

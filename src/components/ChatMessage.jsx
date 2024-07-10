@@ -8,7 +8,7 @@ import { RiShareForwardFill } from "react-icons/ri";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 
-const ChatMessage = ({ message, image, user, friend }) => {
+const ChatMessage = ({ message, user, friend }) => {
   const dispatch = useDispatch();
   const [showEmoji, setShowEmoji] = useState(false);
   const [read, setRead] = useState(message.read);
@@ -52,9 +52,11 @@ const ChatMessage = ({ message, image, user, friend }) => {
       <div
         className={`flex gap-x-2 items-center ${
           message?.sender === user?._id ? "flex-row-reverse" : ""
-        } ${image ? "max-w-[38%]" : "max-w-[70%]"}`}
+        } ${
+          message?.file && message?.file !== "" ? "max-w-[38%]" : "max-w-[70%]"
+        }`}
       >
-        {image ? (
+        {message?.file && message?.file !== "" ? (
           <div
             className={`${
               message?.sender === user?._id
@@ -64,19 +66,26 @@ const ChatMessage = ({ message, image, user, friend }) => {
           >
             <div className='max-w-full overflow-hidden'>
               <img
-                src='/avatar.jpg'
-                alt='avatar'
+                src={message?.file}
+                alt='file'
                 className='max-w-full object-cover rounded hover:cursor-pointer'
               />
             </div>
             <div
-              className={`relative flex justify-between px-2 gap-x-3 w-full break-all text-sm font-medium`}
+              className={`relative flex min-h-3 justify-between px-2 gap-x-3 w-full break-all text-sm font-medium `}
             >
               {message?.message}
               <div
-                className={`flex flex-col justify-end text-xs text-icon min-w-fit right-2 bottom-0 absolute`}
+                className={`flex justify-end text-xs items-center gap-x-1 text-icon min-w-fit right-2 bottom-0 absolute`}
               >
                 {time}
+                {message?.sender === user?._id && (
+                  <RiCheckDoubleFill
+                    className={`text-base lg:text-lg 2xl:text-xl ${
+                      read ? "text-green-600" : "text-icon"
+                    }`}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -119,7 +128,7 @@ const ChatMessage = ({ message, image, user, friend }) => {
             minWidth: message?.sender === user?._id ? "2.6rem" : "2rem",
           }}
         >
-          {image && (
+          {message?.file && message?.file !== "" && (
             <div className='h-6 w-6 bg-icon rounded-full flex justify-center items-center bg-opacity-35 hover:cursor-pointer'>
               <RiShareForwardFill className='text-white h-5 w-5' />
             </div>

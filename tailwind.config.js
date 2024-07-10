@@ -60,6 +60,7 @@ module.exports = {
         bg_primary: "#d8dbdc",
         "chat-bakground": "#efeae2",
         "self-message-background": "#d9fdd3",
+        "attachment-preview-bg": "#e9edef",
         header: "#00a884",
         bg_secondary: "#f0f2f5",
         icon: "#54656f",
@@ -106,6 +107,23 @@ module.exports = {
           "0%": { left: "0%" },
           "100%": { left: "100%" },
         },
+        "rotate-right-45": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(45deg)" },
+        },
+        "rotate-left-45": {
+          "0%": { transform: "rotate(45deg)" },
+          "100%": { transform: "rotate(0deg)" },
+        },
+        "attachemnt-preview-up": {
+          from: { height: "0" },
+          to: { height: "93%" },
+        },
+        "attachemnt-preview-down": {
+          "0%": { height: "93%" },
+          "50%": { height: "0" },
+          "100%": { visibility: "none" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -115,6 +133,11 @@ module.exports = {
         "drawer-right": "drawer-right 0.2s ease-out forwards",
         "drawer-right-close": "drawer-right-close 0.2s ease-out forwards",
         "progress-loading": "progress-loading 1.5s linear infinite",
+        "rotate-left-45": "rotate-left-45 0.3s forwards",
+        "rotate-right-45": "rotate-right-45 0.3s forwards",
+        "attachemnt-preview-up": "attachemnt-preview-up 0.2s linear forwards",
+        "attachemnt-preview-down":
+          "attachemnt-preview-down 0.3s linear forwards",
       },
     },
   },
