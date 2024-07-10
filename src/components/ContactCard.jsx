@@ -65,16 +65,19 @@ const ContactCard = ({
           </p>
           <p className='text-xs lg:text-sm'>
             {" "}
-            {friend?.messages[friend?.messages?.length - 1].createdAt &&
+            {friend?.messages?.length > 0 &&
+              friend?.messages[friend?.messages?.length - 1]?.createdAt &&
               formatDate(
-                friend?.messages[friend?.messages?.length - 1].createdAt
+                friend?.messages[friend?.messages?.length - 1]?.createdAt
               ).split(",")[0]}{" "}
           </p>
         </div>
         <div className='text-xs lg:text-sm flex items-center justify-between overflow-hidden break-all p-3 pl-0'>
           <p className='overflow-hidden h-5'>
             {" "}
-            {friend?.messages[friend?.messages?.length - 1].message || ""}{" "}
+            {(friend?.messages?.length > 0 &&
+              friend?.messages[friend?.messages?.length - 1]?.message) ||
+              ""}{" "}
           </p>
           <div className='flex gap-x-1'>
             {unreadCount >= 1 && (

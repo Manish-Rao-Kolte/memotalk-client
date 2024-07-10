@@ -78,12 +78,15 @@ const ChatSection = ({ user, friend }) => {
   }, [chatsToShow]);
 
   // Group messages by date
-  const groupedChats = chatsToShow.reduce((acc, chat) => {
-    const date = formatDateForChats(chat.createdAt);
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(chat);
-    return acc;
-  }, {});
+  let groupedChats = {};
+  if (chatsToShow?.length > 0) {
+    groupedChats = chatsToShow?.reduce((acc, chat) => {
+      const date = formatDateForChats(chat.createdAt);
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(chat);
+      return acc;
+    }, {});
+  }
 
   // if (loading) {
   //   return (
