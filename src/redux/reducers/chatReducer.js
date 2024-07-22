@@ -67,7 +67,27 @@ export const markChatAsReadAsync = createAsyncThunk(
   "chat/markChatAsReadAsync",
   async (payload) => {
     try {
-      const result = await apiCall("/messages/update-one", "patch", payload);
+      const result = await apiCall(
+        "/messages/update-one/mark-read",
+        "put",
+        payload
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const markChatAsDeliveredAsync = createAsyncThunk(
+  "chat/markChatAsDeliveredAsync",
+  async (payload) => {
+    try {
+      const result = await apiCall(
+        "/messages/update-one/mark-delivered",
+        "put",
+        payload
+      );
       return result;
     } catch (error) {
       throw error;

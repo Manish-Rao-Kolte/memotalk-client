@@ -101,11 +101,12 @@ module.exports = {
           "100%": { width: "100%" },
         },
         "drawer-right-close": {
-          "100%": { width: "0px" },
+          from: { width: "100%" },
+          to: { width: "0px" },
         },
         "progress-loading": {
-          "0%": { left: "0%" },
-          "100%": { left: "100%" },
+          from: { left: "0%" },
+          to: { left: "100%" },
         },
         "rotate-right-45": {
           "0%": { transform: "rotate(0deg)" },
@@ -124,6 +125,14 @@ module.exports = {
           "50%": { height: "0" },
           "100%": { visibility: "none" },
         },
+        "transition-lable-up": {
+          from: { top: "25%" },
+          to: { top: "-25%" },
+        },
+        "transition-lable-down": {
+          from: { top: "-25%" },
+          to: { top: "25%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -138,6 +147,9 @@ module.exports = {
         "attachemnt-preview-up": "attachemnt-preview-up 0.2s linear forwards",
         "attachemnt-preview-down":
           "attachemnt-preview-down 0.3s linear forwards",
+        "transition-lable-up": "transition-lable-up 0.15s ease-in-out forwards",
+        "transition-lable-down":
+          "transition-lable-down 0.15s ease-in-out forwards",
       },
     },
   },

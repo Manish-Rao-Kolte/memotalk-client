@@ -1,5 +1,6 @@
 import socket from "@/lib/socket";
 import { formatDate } from "@/lib/utils";
+import { markChatAsDeliveredAsync } from "@/redux/reducers/chatReducer";
 import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
 import React, { useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
@@ -26,6 +27,20 @@ const ContactCard = ({
   };
 
   useEffect(() => {
+    friend?.messages?.map((message) => {
+      if (!message.delivered) {
+        console.log("dipatch will work");
+        dispatch(markChatAsDeliveredAsync({ messageId: message?._id })).then(
+          () => {
+            socket.emit("messageDelivered", {
+              messageId: message._id,
+              senderId: message.sender,
+            });
+          }
+        );
+      }
+    });
+
     socket.on("userConnected", (userID) => {
       dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
     });

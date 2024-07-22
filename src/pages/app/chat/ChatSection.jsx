@@ -9,7 +9,7 @@ import { GrSearch } from "react-icons/gr";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { FaMicrophone } from "react-icons/fa";
-import { PiPaperPlaneRightFill } from "react-icons/pi";
+import { IoSendSharp } from "react-icons/io5";
 import socket from "@/lib/socket";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -22,7 +22,7 @@ import { IoCloseOutline } from "react-icons/io5";
 
 const initialMessage = {
   content: "",
-  file: "",
+  file: null,
 };
 const ChatSection = ({ user, friend }) => {
   const dispatch = useDispatch();
@@ -186,14 +186,14 @@ const ChatSection = ({ user, friend }) => {
           </div>
         </div>
         <div
-          className={`w-7 h-7 text-icon hover:text-gray-700 hover:cursor-pointer overflow-hidden flex justify-center items-center`}
+          className={`w-7 h-7 text-icon hover:text-gray-700 overflow-hidden flex justify-center items-center relative`}
         >
           <input
             type='file'
             name='attachment'
             id='attachment'
             aria-label='Upload attachment'
-            className={`inset-0 opacity-0 cursor-pointer`}
+            className={`inset-0 opacity-0 hover:cursor-pointer w-6 h-6 `}
             title='Attach'
             accept='image/*'
             onChange={(e) => {
@@ -215,7 +215,7 @@ const ChatSection = ({ user, friend }) => {
           onKeyDown={handleSendMessage}
         />
         {message?.content?.length > 0 ? (
-          <PiPaperPlaneRightFill
+          <IoSendSharp
             disabled={loading}
             className='w-7 h-7 text-icon hover:cursor-pointer hover:text-gray-700 ml-1'
             onClick={handleSendMessage}
@@ -228,7 +228,7 @@ const ChatSection = ({ user, friend }) => {
       {/* attachemnt preview aection starts from here */}
       <div
         className={`w-full bg-attachment-preview-bg px-4 lg:px-8 xl:px-12 xxl:px-14 z-20 bottom-0 ${
-          message.file !== ""
+          message.file
             ? "animate-attachemnt-preview-up absolute"
             : "animate-attachemnt-preview-down hidden"
         }`}
@@ -238,7 +238,7 @@ const ChatSection = ({ user, friend }) => {
             className='w-7 h-7 text-icon font-semibold hover:cursor-pointer'
             onClick={() => {
               setMessage(initialMessage);
-              setShowEmojiPicker(!showEmojiPicker);
+              setShowEmojiPicker(false);
             }}
           />
         </div>
@@ -246,7 +246,7 @@ const ChatSection = ({ user, friend }) => {
           <img
             id='preview_attachemnt'
             className='object-cover'
-            src={message.file !== "" && URL.createObjectURL(message.file)}
+            src={message.file && URL.createObjectURL(message.file)}
             alt='data'
           />
         </div>
@@ -275,7 +275,7 @@ const ChatSection = ({ user, friend }) => {
         </div>
         <div className='flex w-full h-16 items-center justify-end mt-8'>
           <div className='w-16 h-16 rounded-full bg-header flex justify-center items-center hover:cursor-pointer'>
-            <PiPaperPlaneRightFill
+            <IoSendSharp
               className={`text-white h-7 w-7 ${loading && "animate-pulse"}`}
               onClick={handleSendMessage}
             />

@@ -14,6 +14,7 @@ import {
 import socket from "@/lib/socket";
 import ChatSection from "../chat/ChatSection";
 import { Progress } from "@/components/ui/progress";
+import { markChatAsDeliveredAsync } from "@/redux/reducers/chatReducer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -60,10 +61,22 @@ const Home = () => {
     });
   }, []);
 
+  //as soon as there is a message fetch all data to update users position
   useEffect(() => {
-    dispatch(getChatFriendsAndUsersAsync({ userId: currentUser._id }));
+    if (incomingMessage) {
+      dispatch(
+        markChatAsDeliveredAsync({ messageId: incomingMessage?._id })
+      ).then(() => {
+        socket.emit("messageDelivered", {
+          messageId: incomingMessage?._id,
+          senderId: incomingMessage?.sender,
+        });
+        dispatch(getChatFriendsAndUsersAsync({ userId: currentUser?._id }));
+      });
+    }
   }, [incomingMessage?._id]);
 
+  //as soon as there is change in data update currennt selected contact to show updated data
   useEffect(() => {
     const data = chatUsers?.filter(
       (user) => user?._id === selectedContact?._id

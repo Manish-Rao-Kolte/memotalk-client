@@ -9,6 +9,7 @@ const AddFriends = ({ showAddFriends, setShowAddFreinds }) => {
   const dispatch = useDispatch();
   const { allUsers, loading } = useSelector(userSelector);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [clicked, setClicked] = useState(false);
   const [addToFriendList, setAddToFriendList] = useState([]);
 
   const nonFriendsAvaialableUsersList = allUsers.filter(
@@ -27,7 +28,9 @@ const AddFriends = ({ showAddFriends, setShowAddFreinds }) => {
   return (
     <div
       className={`h-full w-0 overflow-hidden absolute top-0 left-0 z-20 backdrop-blur-md ${
-        showAddFriends ? "animate-drawer-right" : "animate-drawer-right-close"
+        showAddFriends
+          ? "animate-drawer-right"
+          : clicked && "animate-drawer-right-close"
       }`}
     >
       {nonFriendsAvaialableUsersList.length === 0 ? (
@@ -46,6 +49,7 @@ const AddFriends = ({ showAddFriends, setShowAddFreinds }) => {
             className='absolute top-4 right-5 h-7 w-7 hover:cursor-pointer hover:bg-icon hover:bg-opacity-30 rounded-full p-1'
             onClick={() => {
               setShowAddFreinds(false);
+              setClicked(true);
             }}
           />
           <div className='max-h-[70%] overflow-y-scroll w-full'>

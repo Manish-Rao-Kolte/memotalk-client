@@ -5,6 +5,7 @@ import { getChatFriendsAndUsersAsync } from "@/redux/reducers/userReducer";
 import React, { useEffect, useState } from "react";
 import { MdEmojiEmotions } from "react-icons/md";
 import { RiShareForwardFill } from "react-icons/ri";
+import { RiCheckFill } from "react-icons/ri";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 
@@ -12,6 +13,7 @@ const ChatMessage = ({ message, user, friend }) => {
   const dispatch = useDispatch();
   const [showEmoji, setShowEmoji] = useState(false);
   const [read, setRead] = useState(message.read);
+  const [delivered, setDelivered] = useState(message.delivered);
   const { time } = getTimeAndDate(message.createdAt);
 
   // Listen for `messageRead` events from the server
@@ -21,11 +23,19 @@ const ChatMessage = ({ message, user, friend }) => {
         setRead(true); // Update local state to mark the message as read
       }
     };
+    const handleDelivered = ({ messageId, senderId }) => {
+      if (messageId === message._id && senderId === user._id) {
+        console.log("working from delivery");
+        setDelivered(true); // Update local state to mark the message as read
+      }
+    };
 
     socket.on("messageRead", handleRead);
+    socket.on("messageDelivered", handleDelivered);
 
     return () => {
       socket.off("messageRead", handleRead);
+      socket.off("messageDelivered", handleDelivered);
     };
   }, [message._id, user._id]);
 
@@ -53,10 +63,14 @@ const ChatMessage = ({ message, user, friend }) => {
         className={`flex gap-x-2 items-center ${
           message?.sender === user?._id ? "flex-row-reverse" : ""
         } ${
-          message?.file && message?.file !== "" ? "max-w-[38%]" : "max-w-[70%]"
+          message?.file && message?.file !== ""
+            ? "min-w-[38%] max-w-[38%]"
+            : "max-w-[70%]"
         }`}
       >
+        {/* show diferent cards on the basis of media content */}
         {message?.file && message?.file !== "" ? (
+          // ****with media****
           <div
             className={`${
               message?.sender === user?._id
@@ -79,17 +93,23 @@ const ChatMessage = ({ message, user, friend }) => {
                 className={`flex justify-end text-xs items-center gap-x-1 text-icon min-w-fit right-2 bottom-0 absolute`}
               >
                 {time}
-                {message?.sender === user?._id && (
-                  <RiCheckDoubleFill
-                    className={`text-base lg:text-lg 2xl:text-xl ${
-                      read ? "text-green-600" : "text-icon"
-                    }`}
-                  />
-                )}
+                {message?.sender === user?._id &&
+                  (!delivered && !read ? (
+                    <RiCheckFill
+                      className={`text-base lg:text-lg 2xl:text-xl text-icon`}
+                    />
+                  ) : (
+                    <RiCheckDoubleFill
+                      className={`text-base lg:text-lg 2xl:text-xl ${
+                        read ? "text-green-600" : "text-icon"
+                      }`}
+                    />
+                  ))}
               </div>
             </div>
           </div>
         ) : (
+          // ****without media****
           <div
             className={`${
               message?.sender === user?._id
@@ -109,17 +129,23 @@ const ChatMessage = ({ message, user, friend }) => {
                 className={`absolute right-2.5 bottom-1 text-xs text-icon w-fit h-fit flex items-center gap-x-0.5 lg:gap-x-1`}
               >
                 {time}
-                {message?.sender === user?._id && (
-                  <RiCheckDoubleFill
-                    className={`text-base lg:text-lg 2xl:text-xl ${
-                      read ? "text-green-600" : "text-icon"
-                    }`}
-                  />
-                )}
+                {message?.sender === user?._id &&
+                  (!delivered && !read ? (
+                    <RiCheckFill
+                      className={`text-base lg:text-lg 2xl:text-xl text-icon`}
+                    />
+                  ) : (
+                    <RiCheckDoubleFill
+                      className={`text-base lg:text-lg 2xl:text-xl ${
+                        read ? "text-green-600" : "text-icon"
+                      }`}
+                    />
+                  ))}
               </span>
             </div>
           </div>
         )}
+        {/* show emoji and share option depending on media content in message */}
         <div
           className={`flex gap-x-1 items-center ${
             message?.sender === user?._id ? "flex-row-reverse" : ""

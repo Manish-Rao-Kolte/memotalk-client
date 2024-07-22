@@ -1,35 +1,33 @@
 import React, { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUserAsync, userSelector } from "@/redux/reducers/userReducer";
+import Input from "@/components/Input";
 
 const initialUserData = {
-  email: "",
-  username: "",
-  fullname: "",
-  password: "",
+  email: null,
+  username: null,
+  fullname: null,
+  password: null,
   avatar: null,
 };
 
 const RegisterUser = () => {
-  const { loading } = useSelector(userSelector);
-  const [userData, setUserData] = useState(initialUserData);
-  const [usernameSuggestion, setUsernameSuggestion] = useState([]);
-  const [suggestionClicked, setSuggestionClicked] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { loading } = useSelector(userSelector);
+  const [userData, setUserData] = useState(initialUserData);
 
-  //currently using third party api but can make our own on server side
-  const handleSuggestions = async () => {
-    if (!suggestionClicked) {
-      const words = userData.fullname.split(" ");
-      const response = await axios.get(
-        `https://api.datamuse.com/sug?s=${words[0]}`
-      );
-      setUsernameSuggestion([...response?.data]);
-    }
-  };
+  // const handleSuggestions = async () => {
+  //   if (!suggestionClicked) {
+  //     const words = userData.fullname.split(" ");
+  //     const response = await axios.get(
+  //       `https://api.datamuse.com/sug?s=${words[0]}`
+  //     );
+  //     setUsernameSuggestion([...response?.data]);
+  //   }
+  // };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -68,148 +66,58 @@ const RegisterUser = () => {
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
           <form className='space-y-6' onSubmit={handleFormSubmit}>
             {/* email starts here */}
-            <div>
-              <label
-                htmlFor='email'
-                className='block text-sm font-medium leading-6 text-gray-900'
-              >
-                Email address
-              </label>
-              <div className='mt-2'>
-                <input
-                  id='email'
-                  name='email'
-                  type='email'
-                  autoComplete='email'
-                  value={userData.email}
-                  onChange={(e) =>
-                    setUserData({ ...userData, email: e.target.value })
-                  }
-                  required
-                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-form-primary sm:text-sm sm:leading-6'
-                />
-              </div>
-            </div>
+
+            <Input
+              lable={"Email"}
+              id={"email"}
+              name={"email"}
+              type={"email"}
+              value={userData.email}
+              onChange={(e) =>
+                setUserData({ ...userData, email: e.target.value })
+              }
+              required
+            />
 
             {/* fullname starts here */}
-            <div>
-              <label
-                htmlFor='fullname'
-                className='block text-sm font-medium leading-6 text-gray-900'
-              >
-                Full Name
-              </label>
-              <div className='mt-2'>
-                <input
-                  id='fullname'
-                  name='emafullnameil'
-                  type='text'
-                  value={userData.fullname}
-                  onChange={(e) =>
-                    setUserData({ ...userData, fullname: e.target.value })
-                  }
-                  required
-                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-form-primary sm:text-sm sm:leading-6'
-                />
-              </div>
-            </div>
+            <Input
+              lable={"Full Name"}
+              id={"fullname"}
+              name={"fullname"}
+              type={"text"}
+              value={userData.fullname}
+              onChange={(e) =>
+                setUserData({ ...userData, fullname: e.target.value })
+              }
+              required
+            />
 
             {/* username starts here */}
-            <div>
-              <div className='flex items-center justify-between'>
-                <label
-                  htmlFor='username'
-                  className='block text-sm font-medium leading-6 text-gray-900'
-                >
-                  Username
-                </label>
-                <div className='text-sm'>
-                  {!suggestionClicked && (
-                    <p
-                      className='font-semibold text-indigo-600 hover:text-indigo-500'
-                      onClick={() => {
-                        setSuggestionClicked(true);
-                        handleSuggestions();
-                      }}
-                    >
-                      Get suggestions
-                    </p>
-                  )}
-                  {suggestionClicked && (
-                    <p
-                      className='font-semibold text-indigo-600 hover:text-indigo-500'
-                      onClick={() => {
-                        setSuggestionClicked(false);
-                        handleSuggestions();
-                      }}
-                    >
-                      Create your own
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className='mt-2'>
-                {!suggestionClicked && (
-                  <input
-                    id='username'
-                    name='username'
-                    type='text'
-                    value={userData.username}
-                    onChange={(e) =>
-                      setUserData({ ...userData, username: e.target.value })
-                    }
-                    required
-                    className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-form-primary sm:text-sm sm:leading-6'
-                  />
-                )}
-                {suggestionClicked && (
-                  <select
-                    name='username'
-                    id='username'
-                    onChange={(e) =>
-                      setUserData({ ...userData, username: e.target.value })
-                    }
-                    className={`${
-                      suggestionClicked ? "block" : "hidden"
-                    } block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-form-primary sm:text-sm sm:leading-6`}
-                  >
-                    {usernameSuggestion.map((username, index) => {
-                      return (
-                        <option value={username?.word} key={index}>
-                          {username?.word}
-                        </option>
-                      );
-                    })}
-                  </select>
-                )}
-              </div>
-            </div>
+            <Input
+              lable={"Username"}
+              id='username'
+              name='username'
+              type='text'
+              value={userData.username}
+              onChange={(e) =>
+                setUserData({ ...userData, username: e.target.value })
+              }
+              required
+            />
 
             {/* password starts here */}
-            <div>
-              <div className='flex items-center justify-between'>
-                <label
-                  htmlFor='password'
-                  className='block text-sm font-medium leading-6 text-gray-900'
-                >
-                  Password
-                </label>
-              </div>
-              <div className='mt-2'>
-                <input
-                  id='password'
-                  name='password'
-                  type='password'
-                  autoComplete='current-password'
-                  value={userData.password}
-                  onChange={(e) =>
-                    setUserData({ ...userData, password: e.target.value })
-                  }
-                  required
-                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-form-secondary sm:text-sm sm:leading-6'
-                />
-              </div>
-            </div>
+            <Input
+              lable={"Password"}
+              id='password'
+              name='password'
+              type='password'
+              autoComplete='current-password'
+              value={userData.password}
+              onChange={(e) =>
+                setUserData({ ...userData, password: e.target.value })
+              }
+              required
+            />
 
             {/* avatar starts here */}
             <div className='flex items-center space-x-6'>

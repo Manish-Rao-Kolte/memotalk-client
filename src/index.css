@@ -59,6 +59,8 @@
   --tw-ring-shadow: initial;
 }
 
+::-webkit-file-upload-button { cursor:pointer; }
+
 ::-webkit-scrollbar {
   width: 2px; /* Width of the scrollbar */
 }
